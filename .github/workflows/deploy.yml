@@ -1,4 +1,4 @@
-name: Deploy to Minikube
+name: Deploy Prometheus and Grafana
 
 on:
   push:
@@ -24,4 +24,40 @@ jobs:
       run: |
         echo "$KUBECONFIG" > kubeconfig
         export KUBECONFIG=$(pwd)/kubeconfig
-        kubectl get nodes
+
+   # 3. 安装 Helm
+    - name: Install Helm
+      uses: azure/setup-helm@v3
+      with:
+        version: 'latest'
+
+    # 4. 添加 Helm 仓库
+    - name: Add Helm repositories
+      run: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo add grafana https://grafana.github.io/helm-charts
+        helm repo update
+
+    # 5. 部署 Prometheus
+    - name: Deploy Prometheus
+      run: |
+        helm upgrade --install prometheus prometheus-community/prometheus \
+          --namespace monitoring --create-namespace \
+          --set alertmanager.persistentVolume.storageClass="standard" \
+          --set server.persistentVolume.storageClass="standard" \
+          --set pushgateway.enabled=false
+
+    # 6. 部署 Grafana
+    - name: Deploy Grafana
+      run: |
+        helm upgrade --install grafana grafana/grafana \
+          --namespace monitoring \
+          --set persistence.enabled=true \
+          --set persistence.storageClassName="standard" \
+          --set adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}" \
+          --set service.type=LoadBalancer
+
+    # 7. 验证部署状态
+    - name: Verify Prometheus and Grafana deployments
+      run: |
+        kubectl get pods
