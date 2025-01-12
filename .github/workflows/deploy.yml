@@ -22,7 +22,7 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     # 3. 构建并推送镜像
-   - name: Build and Push Docker Image
+    - name: Build and Push Docker Image
      run: |
        docker build -t ${{ secrets.DOCKER_USERNAME }}/cloud-service:latest ./cloud-service
        docker push ${{ secrets.DOCKER_USERNAME }}/cloud-service:latest
