@@ -56,4 +56,5 @@ jobs:
           --set persistence.storageClassName="standard" \
           --set adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}" \
           --set service.type=LoadBalancer
+        kubectl port-forward -n monitoring svc/prometheus-server 9090:80
         kubectl get pods -n monitoring
