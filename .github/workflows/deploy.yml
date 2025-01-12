@@ -50,11 +50,6 @@ jobs:
           --set alertmanager.persistentVolume.storageClass="standard" \
           --set server.persistentVolume.storageClass="standard" \
           --set pushgateway.enabled=false
-
-    # 6. 部署 Grafana
-    - name: Deploy Grafana
-      run: |
-        export KUBECONFIG=$(pwd)/kubeconfig
         helm upgrade --install grafana grafana/grafana \
           --namespace monitoring \
           --set persistence.enabled=true \
