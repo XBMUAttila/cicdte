@@ -56,4 +56,4 @@ jobs:
           --set persistence.storageClassName="standard" \
           --set adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}" \
           --set service.type=LoadBalancer
-        kubectl get pods
+        kubectl get pods -n monitoring
