@@ -24,6 +24,7 @@ jobs:
       run: |
         echo "$KUBECONFIG" > kubeconfig
         export KUBECONFIG=$(pwd)/kubeconfig
+        kubectl get nodes
 
    # 3. 安装 Helm
     - name: Install Helm
