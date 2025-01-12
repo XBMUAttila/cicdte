@@ -38,9 +38,5 @@ jobs:
       run: |
         echo "${{ secrets.KUBECONFIG }}" > kubeconfig
         export KUBECONFIG=kubeconfig
-
-    # 6. 部署到 Kubernetes
-    - name: Apply Kubernetes manifests
-      run: |
         kubectl apply -f kubernetes/release/.
-#        kubectl rollout status deployment/my-app
+#       kubectl rollout status deployment/my-app
