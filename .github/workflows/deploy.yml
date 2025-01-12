@@ -1,4 +1,4 @@
-name: Deploy Prometheus and Grafana
+name: Deploy to Kubernetes
 
 on:
   push:
@@ -10,51 +10,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # 1. 检出代码
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Set up kubectl
-      uses: azure/setup-kubectl@v3
+    # 2. 设置 Docker 登陆
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
       with:
-        version: 'v1.27.0'
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Configure Kubeconfig
-      env:
-        KUBECONFIG: ${{ secrets.KUBECONFIG }}
+    # 3. 构建并推送镜像
+    - name: Build and Push Docker Image
       run: |
-        echo "$KUBECONFIG" > kubeconfig
-        export KUBECONFIG=$(pwd)/kubeconfig
-        kubectl get nodes
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/my-app:latest .
+        docker push ${{ secrets.DOCKER_USERNAME }}/my-app:latest
 
-   # 3. 安装 Helm
-    - name: Install Helm
-      uses: azure/setup-helm@v3
+    # 4. 配置 kubectl
+    - name: Setup kubectl
+      uses: azure/setup-kubectl@v3
       with:
         version: 'latest'
 
-    # 4. 添加 Helm 仓库
-    - name: Add Helm repositories
+    # 5. 配置 kubeconfig
+    - name: Configure kubeconfig
       run: |
-        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-        helm repo add grafana https://grafana.github.io/helm-charts
-        helm repo update
+        echo "${{ secrets.KUBECONFIG }}" > kubeconfig
+        export KUBECONFIG=kubeconfig
 
-    # 5. 部署 Prometheus
-    - name: Deploy Prometheus
+    # 6. 部署到 Kubernetes
+    - name: Apply Kubernetes manifests
       run: |
-        export KUBECONFIG=$(pwd)/kubeconfig
-        kubectl get nodes
-        kubectl cluster-info
-        helm upgrade --install prometheus prometheus-community/prometheus \
-          --namespace monitoring --create-namespace \
-          --set alertmanager.persistentVolume.storageClass="standard" \
-          --set server.persistentVolume.storageClass="standard" \
-          --set pushgateway.enabled=false
-        helm upgrade --install grafana grafana/grafana \
-          --namespace monitoring \
-          --set persistence.enabled=true \
-          --set persistence.storageClassName="standard" \
-          --set adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}" \
-          --set service.type=LoadBalancer
-        kubectl port-forward -n monitoring svc/prometheus-server 9090:80
-        kubectl get pods -n monitoring
+        kubectl apply -f kubernetes/release/.
+        kubectl rollout status deployment/my-app
