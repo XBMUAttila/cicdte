@@ -54,14 +54,11 @@ jobs:
     # 6. 部署 Grafana
     - name: Deploy Grafana
       run: |
+        export KUBECONFIG=$(pwd)/kubeconfig
         helm upgrade --install grafana grafana/grafana \
           --namespace monitoring \
           --set persistence.enabled=true \
           --set persistence.storageClassName="standard" \
           --set adminPassword="${{ secrets.GRAFANA_ADMIN_PASSWORD }}" \
           --set service.type=LoadBalancer
-
-    # 7. 验证部署状态
-    - name: Verify Prometheus and Grafana deployments
-      run: |
         kubectl get pods
