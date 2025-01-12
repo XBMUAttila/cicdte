@@ -51,7 +51,6 @@ data:
           replication_factor: 1
       chunk_idle_period: 5m
       chunk_retain_period: 30s
-      max_transfer_retries: 0
 
     schema_config:
       configs:
@@ -68,16 +67,12 @@ data:
         active_index_directory: /loki/index
         cache_location: /loki/cache
         cache_ttl: 24h
-        shared_store: filesystem
       filesystem:
         directory: /loki/chunks
 
     limits_config:
       max_streams_per_user: 1000
       max_global_streams_per_user: 10000
-
-    compactor:
-      shared_store: filesystem
 ---
 apiVersion: v1
 kind: Service
