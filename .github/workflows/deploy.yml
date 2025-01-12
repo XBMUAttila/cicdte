@@ -39,4 +39,5 @@ jobs:
         echo "${{ secrets.KUBECONFIG }}" > kubeconfig
         export KUBECONFIG=kubeconfig
         kubectl apply -f kubernetes/release/.
+        kubectl get nodes
 #       kubectl rollout status deployment/my-app
