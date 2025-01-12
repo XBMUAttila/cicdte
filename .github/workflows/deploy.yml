@@ -42,6 +42,7 @@ jobs:
     # 5. 部署 Prometheus
     - name: Deploy Prometheus
       run: |
+        export KUBECONFIG=$(pwd)/kubeconfig
         kubectl get nodes
         kubectl cluster-info
         helm upgrade --install prometheus prometheus-community/prometheus \
