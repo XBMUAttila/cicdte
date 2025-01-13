@@ -8,10 +8,10 @@ COPY package*.json ./
 
 # 安装依赖
 RUN npm install
-RUN npm run build
 
 # 复制项目文件
 COPY . .
+RUN npm run build
 
 # 暴露应用端口
 EXPOSE 3000
