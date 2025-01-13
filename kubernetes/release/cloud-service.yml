@@ -18,7 +18,7 @@ spec:
           ports:
             - containerPort: 3000
       imagePullSecrets:
-        - name: my-registry-secret
+        - name: dockerhub-secret
 ---
 apiVersion: v1
 kind: Service
