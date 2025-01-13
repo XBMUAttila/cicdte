@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: cloud-service-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: cloud-service
@@ -18,7 +18,7 @@ spec:
           ports:
             - containerPort: 3000
       imagePullSecrets:
-        - name: dockerhub-secret
+        - name: my-registry-secret
 ---
 apiVersion: v1
 kind: Service
