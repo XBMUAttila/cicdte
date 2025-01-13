@@ -17,8 +17,8 @@ spec:
           image: frankfromcn/cloud-service:v1
           ports:
             - containerPort: 3000
-      imagePullSecrets:
-        - name: dockerhub-secret
+      # imagePullSecrets:
+      #   - name: dockerhub-secret
 ---
 apiVersion: v1
 kind: Service
