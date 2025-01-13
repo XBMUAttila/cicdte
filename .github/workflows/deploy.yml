@@ -38,10 +38,5 @@ jobs:
         run: |
           echo "${{ secrets.KUBECONFIG }}" > kubeconfig
           export KUBECONFIG=kubeconfig
-          kubectl create secret docker-registry dockerhub-secret \
-            --docker-username="${{ secrets.DOCKER_USERNAME }}" \
-            --docker-password="${{ secrets.DOCKER_PASSWORD }}" \
-            --docker-server=https://index.docker.io/v1/ \
-            --dry-run=client -o yaml | kubectl apply -f -
           kubectl apply -f kubernetes/release/.
           kubectl get services --all-namespaces
