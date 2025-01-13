@@ -13,10 +13,12 @@ spec:
         app: cloud-service
     spec:
       containers:
-      - name: cloud-service
-        image: frankfromcn/cloud-service:v1
-        ports:
-        - containerPort: 3000
+        - name: cloud-service
+          image: frankfromcn/cloud-service:v1
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: dockerhub-secret
 ---
 apiVersion: v1
 kind: Service
