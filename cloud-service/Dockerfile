@@ -1,7 +1,7 @@
 FROM node:22-bookworm
 
 # 设置工作目录
-WORKDIR /app
+WORKDIR /home
 
 # 复制 package.json 和 package-lock.json
 COPY package*.json ./
